@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorUI", "BlazorUI\BlazorUI.csproj", "{02AF0931-E4FE-41DF-9932-D7238F50840A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{6F9235D2-0EE3-44EC-A066-228539122179}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -10,5 +14,15 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{02AF0931-E4FE-41DF-9932-D7238F50840A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02AF0931-E4FE-41DF-9932-D7238F50840A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02AF0931-E4FE-41DF-9932-D7238F50840A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02AF0931-E4FE-41DF-9932-D7238F50840A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F9235D2-0EE3-44EC-A066-228539122179}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F9235D2-0EE3-44EC-A066-228539122179}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F9235D2-0EE3-44EC-A066-228539122179}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F9235D2-0EE3-44EC-A066-228539122179}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
