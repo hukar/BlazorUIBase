@@ -7,10 +7,15 @@
 <MudLayout>
     <MudAppBar>
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        My Application
+        Robot Application
     </MudAppBar>
     <MudDrawer @bind-Open="@_drawerOpen">
-        
+        <MudPaper Class="ma-4 py-12 d-flex justify-center" Elevation="3">
+        <MudAvatar Style="height:70px; width:70px;" Color="Color.Primary">
+            <MudIcon Style="font-size: 3rem;transform: rotate(180deg)" Icon="@Icons.Material.TwoTone.Propane"/>
+        </MudAvatar>
+        </MudPaper>
+        <AppNav></AppNav>
     </MudDrawer>
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.Medium">
