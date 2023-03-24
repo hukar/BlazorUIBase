@@ -8,21 +8,7 @@
 {
     @foreach (var robot in Robots)
     {
-        <MudPaper Class="d-flex gap-4 pa-2 my-4 align-center grey lighten-5" Elevation="2">
-            <MudAvatar Rounded="true" Style="height: 50px; width:  50px;">
-                <MudImage Src="@($"images/robots/robot-{GetImageId()}.png")" ></MudImage>
-            </MudAvatar>
-            <MudText Typo="Typo.h6" Class="grey-text text-darken-1">@robot.CodeName</MudText>
-            <MudButton
-                Class="ml-auto"
-                Variant="Variant.Text" 
-                Color="Color.Info"
-                EndIcon="@Icons.Material.Filled.EditNote">Edit</MudButton>
-            <MudButton 
-                Variant="Variant.Text" 
-                Color="Color.Error"
-                EndIcon="@Icons.Material.Filled.Blender">Disintegrate</MudButton>
-        </MudPaper>
+        <RobotListItem Robot="robot" />
     }
 }
 
@@ -38,12 +24,4 @@
     {
         Robots = await Repo.GetAllRobots();
     }
-
-    int GetImageId()
-    {
-        Random random = new Random();
-
-        return random.Next(1, 8);
-    }
-
 }

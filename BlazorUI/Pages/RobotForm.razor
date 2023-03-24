@@ -1,7 +1,15 @@
 @page "/robot/add"
+@using Domain
 
-<MudText Class="mt-6" Typo="Typo.h3" Color="Color.Secondary">RobotForm</MudText>
+<MudText Class="mt-6" Typo="Typo.h3" Color="Color.Secondary">RobotForm : Create Mode</MudText>
+<EditForm Model="Robot" OnV>
+    
+</EditForm>
+
+
+
+
 
 @code {
-    
+    public Robot Robot { get; set; } = new();
 }
