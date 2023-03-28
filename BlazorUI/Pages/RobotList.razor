@@ -1,6 +1,4 @@
 @page "/robot/list"
-@using BlazorUI.Services
-@using Domain
 
 <MudText Class="mt-6" Typo="Typo.h3" Color="Color.Secondary">RobotList</MudText>
 
@@ -18,7 +16,7 @@
     [Inject]
     public IRobotRepository Repo { get; set; } = default!;
 
-    public IEnumerable<Robot> Robots { get; set; } = default!;
+    public IEnumerable<Robot>? Robots { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {

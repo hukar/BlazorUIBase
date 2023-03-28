@@ -22,6 +22,10 @@ public class RobotRepository : IRobotRepository
     public async Task<Robot?> GetRobotWithWeapons(int id)
         => await _httpClient.GetFromJsonAsync<Robot>($"/robots:{id}/weapons");
 
+    public async Task<IEnumerable<Weapon>> GetAllWeapons()
+        => await _httpClient.GetFromJsonAsync<IEnumerable<Weapon>>("/robots/weaponslist") 
+           ?? new List<Weapon>();
+
     public Task AddRobot(Robot robotToAdd)
     {
         throw new NotImplementedException();
