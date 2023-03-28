@@ -6,7 +6,7 @@ public class Weapon
     public string Name { get; set; } = string.Empty;
     public int RobotId { get; set; }
     
-    // Note: this is important so the MudSelect can compare pizzas
+    // Note: this is important so the MudSelect can compare Weapons
     public override bool Equals(object? o)
     {
         var other = o as Weapon;
@@ -16,5 +16,5 @@ public class Weapon
     // Note: this is important too!
     public override int GetHashCode() => Name?.GetHashCode() ?? 0;
     
-    // public override string ToString() => Name;
+    public override string ToString() => Name;
 }

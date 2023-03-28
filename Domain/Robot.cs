@@ -4,7 +4,7 @@ public class Robot
 {
     public int Id { get; set; }
     public string CodeName { get; set; } = string.Empty;
-    public List<Weapon> Weapons { get; set; } = new();
+    public IEnumerable<Weapon> Weapons { get; set; }  = new List<Weapon>();
 
     public Weapon? FavouriteWeapon { get; set; }
 }

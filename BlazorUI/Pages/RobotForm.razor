@@ -18,13 +18,15 @@
                         For="() => Robot.CodeName"/>
                     @if (_weapons is not null)
                     {
-                        <MudSelect 
-                            Label="Favourite Weapons" 
-                            @bind-Value="@Robot.FavouriteWeapon">
+                        <MudSelect
+                            Label="Favourite Weapons"
+                            @bind-Value="@Robot.FavouriteWeapon"
+                            AnchorOrigin="Origin.BottomCenter">
+                                <MudSelectItem Value="@(new Weapon() { Id = 99, Name = "TUR-99" })"></MudSelectItem>
                             @foreach (var weapon in _weapons)
                             {
                                 <MudSelectItem Value="@weapon">
-                                    <img src="@($"images/weapons/weapon-{weapon.Id}.png")" height="14" class="mr-1" /> @weapon.Name
+                                    <img src="@($"images/weapons/weapon-{weapon.Id}.png")" height="14" class="mr-1"/> @weapon.Name
                                 </MudSelectItem>
                             }
                         </MudSelect>
@@ -32,7 +34,6 @@
                     @if (_weapons is not null)
                     {
                         <MudSelect
-                            T="Weapon"
                             Label="List Secondary Weapons" 
                             MultiSelection="true"
                             @bind-SelectedValues="@Robot.Weapons">
@@ -68,6 +69,17 @@
                 }
             </MudPaper>
         </MudItem>
+        <MudItem xs="12">
+            <MudPaper Elevation="2" Class="pa-8 mt-4">
+                @if (Robot.Weapons is not null)
+                {
+                    @foreach (var weapon in Robot.Weapons)
+                    {
+                        <MudText Typo="Typo.body1">@weapon.Name</MudText>
+                    }
+                }
+            </MudPaper>
+        </MudItem>
     </MudGrid>
 </EditForm>
 
@@ -75,6 +87,8 @@
 @code {
     [Inject]
     public IRobotRepository Repo { get; set; } = default!;
+
+    // private IEnumerable<Weapon> _options = new HashSet<Weapon>();
     
     public Robot Robot { get; set; } = new();
     
@@ -89,6 +103,10 @@
 
     void ValidSubmitHandle()
     {
+        // Robot.Weapons.AddRange(_options.ToList());
+        
+        Console.WriteLine(Robot.CodeName);
+        
         Console.WriteLine("Valid Submit");
         _isSuccess = true;
     }
