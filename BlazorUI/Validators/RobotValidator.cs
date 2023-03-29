@@ -20,6 +20,9 @@ public class RobotValidator : AbstractValidator<Robot>
         RuleFor(r => r.FavouriteWeapon)
             .NotEmpty().WithMessage("Une arme est obligatoire")
             .MustAsync(IsWeaponExist).WithMessage("cette weapon n'existe pas");
+        
+        RuleForEach(r => r.Weapons)
+            .MustAsync(IsWeaponExist).WithMessage("cette weapon n'existe pas");
     }
 
     private async Task<bool> IsWeaponExist(Robot robot,
@@ -30,3 +33,4 @@ public class RobotValidator : AbstractValidator<Robot>
         return existingWeapons.Contains(weapon);
     }
 }
+

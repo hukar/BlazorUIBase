@@ -1,28 +1,31 @@
 @page "/robot/add"
-@using Domain
 @using Blazored.FluentValidation
 
 <MudText Class="my-6" Typo="Typo.h3" Color="Color.Secondary">RobotForm : Create Mode</MudText>
 
-<EditForm Model="@Robot" OnValidSubmit="@ValidSubmitHandle" OnInvalidSubmit="@InvalidSubmitHandle">
-    <FluentValidationValidator />
-    
+@*<EditForm Model="@Robot" OnValidSubmit="@ValidSubmitHandle" OnInvalidSubmit="@InvalidSubmitHandle">*@
+<EditForm Model="@Robot" OnSubmit="SubmitFormAsync">
+    <FluentValidationValidator @ref="_fluentValidationValidator"/>
+
     <MudGrid>
         <MudItem xs="6">
             <MudCard>
                 <MudCardContent>
-                    <MudTextField 
-                        @bind-Value="@Robot.CodeName" 
-                        Label="CodeName" 
-                        Variant="Variant.Text" 
+                    <MudTextField
+                        @bind-Value="@Robot.CodeName"
+                        Label="CodeName"
+                        Variant="Variant.Text"
                         For="() => Robot.CodeName"/>
                     @if (_weapons is not null)
                     {
                         <MudSelect
                             Label="Favourite Weapons"
                             @bind-Value="@Robot.FavouriteWeapon"
-                            AnchorOrigin="Origin.BottomCenter">
-                                <MudSelectItem Value="@(new Weapon() { Id = 99, Name = "TUR-99" })"></MudSelectItem>
+                            AnchorOrigin="Origin.BottomCenter"
+                            For="() => Robot.FavouriteWeapon">
+                            <MudSelectItem Value="@(new Weapon() { Id = 99, Name = "TUR-99" })">
+                                <img src="images/weapons/weapon-99.png" height="14" class="mr-1"/> TUR-99
+                            </MudSelectItem>
                             @foreach (var weapon in _weapons)
                             {
                                 <MudSelectItem Value="@weapon">
@@ -34,23 +37,32 @@
                     @if (_weapons is not null)
                     {
                         <MudSelect
-                            Label="List Secondary Weapons" 
+                            Label="List Secondary Weapons"
                             MultiSelection="true"
-                            @bind-SelectedValues="@Robot.Weapons">
+                            @bind-SelectedValues="@Robot.Weapons"
+                            For="() => Robot.Weapons">
+                            <MudSelectItem Value="@(new Weapon() { Id = 98, Name = "TUR-98" })">
+                                <img src="images/weapons/weapon-99.png" height="14" class="mr-1"/> TUR-98
+                            </MudSelectItem>
+                            <MudSelectItem Value="@(new Weapon() { Id = 99, Name = "TUR-99" })">
+                                <img src="images/weapons/weapon-99.png" height="14" class="mr-1"/> TUR-99
+                            </MudSelectItem>
                             @foreach (var weapon in _weapons)
                             {
                                 <MudSelectItem Value="@weapon">
-                                    <img src="@($"images/weapons/weapon-{weapon.Id}.png")" height="14" class="mr-1" /> @weapon.Name
+                                    <img src="@($"images/weapons/weapon-{weapon.Id}.png")" height="14" class="mr-1"/> @weapon.Name
                                 </MudSelectItem>
                             }
                         </MudSelect>
                     }
                 </MudCardContent>
                 <MudCardActions>
-                    <MudButton 
-                        Variant="Variant.Filled" 
+                    <MudButton
+                        Variant="Variant.Filled"
                         ButtonType="ButtonType.Submit"
-                        Color="Color.Secondary">Add Robot</MudButton>
+                        Color="Color.Secondary">
+                        Add Robot
+                    </MudButton>
                 </MudCardActions>
             </MudCard>
         </MudItem>
@@ -64,7 +76,7 @@
                 else
                 {
                     <MudText Color="Color.Error">
-                        <ValidationSummary />
+                        <ValidationSummary/>
                     </MudText>
                 }
             </MudPaper>
@@ -85,14 +97,16 @@
 
 
 @code {
+
     [Inject]
     public IRobotRepository Repo { get; set; } = default!;
 
     // private IEnumerable<Weapon> _options = new HashSet<Weapon>();
-    
+
     public Robot Robot { get; set; } = new();
-    
+
     IEnumerable<Weapon> _weapons = default!;
+    private FluentValidationValidator? _fluentValidationValidator;
 
     bool _isSuccess = false;
 
@@ -103,17 +117,32 @@
 
     void ValidSubmitHandle()
     {
-        // Robot.Weapons.AddRange(_options.ToList());
-        
+    // Robot.Weapons.AddRange(_options.ToList());
+
         Console.WriteLine(Robot.CodeName);
-        
+
         Console.WriteLine("Valid Submit");
         _isSuccess = true;
     }
-    
+
     void InvalidSubmitHandle()
     {
         Console.WriteLine("Invalid Submit");
         _isSuccess = false;
     }
+
+    async Task SubmitFormAsync()
+    {
+        if (await _fluentValidationValidator.ValidateAsync())
+        {
+            Console.WriteLine("It's valid");
+            _isSuccess = true;
+        }
+        else
+        {
+            Console.WriteLine("It isn't valid");
+            _isSuccess = false;
+        }
+    }
+
 }
