@@ -8,7 +8,7 @@
     <FluentValidationValidator @ref="_fluentValidationValidator"/>
 
     <MudGrid>
-        <MudItem xs="6">
+        <MudItem xs="12" sm="6">
             <MudCard>
                 <MudCardContent>
                     <MudTextField
@@ -34,7 +34,7 @@
                             }
                         </MudSelect>
                     }
-                    @if (_weapons is not null)
+                    @*@if (_weapons is not null)
                     {
                         <MudSelect
                             Label="List Secondary Weapons"
@@ -53,8 +53,8 @@
                                     <img src="@($"images/weapons/weapon-{weapon.Id}.png")" height="14" class="mr-1"/> @weapon.Name
                                 </MudSelectItem>
                             }
-                        </MudSelect>
-                    }
+                        </MudSelect>@
+                    }*@
                 </MudCardContent>
                 <MudCardActions>
                     <MudButton
@@ -66,7 +66,7 @@
                 </MudCardActions>
             </MudCard>
         </MudItem>
-        <MudItem xs="6">
+        <MudItem xs="12" sm="6">
             <MudPaper Elevation="2" Class="mud-height-full pa-4">
                 <MudText Typo="Typo.h6">Validation Summary</MudText>
                 @if (_isSuccess)
@@ -95,54 +95,9 @@
     </MudGrid>
 </EditForm>
 
-
 @code {
 
-    [Inject]
-    public IRobotRepository Repo { get; set; } = default!;
-
-    // private IEnumerable<Weapon> _options = new HashSet<Weapon>();
-
-    public Robot Robot { get; set; } = new();
-
-    IEnumerable<Weapon> _weapons = default!;
-    private FluentValidationValidator? _fluentValidationValidator;
-
-    bool _isSuccess = false;
-
-    protected override async Task OnInitializedAsync()
-    {
-        _weapons = await Repo.GetAllWeapons();
-    }
-
-    void ValidSubmitHandle()
-    {
-    // Robot.Weapons.AddRange(_options.ToList());
-
-        Console.WriteLine(Robot.CodeName);
-
-        Console.WriteLine("Valid Submit");
-        _isSuccess = true;
-    }
-
-    void InvalidSubmitHandle()
-    {
-        Console.WriteLine("Invalid Submit");
-        _isSuccess = false;
-    }
-
-    async Task SubmitFormAsync()
-    {
-        if (await _fluentValidationValidator.ValidateAsync())
-        {
-            Console.WriteLine("It's valid");
-            _isSuccess = true;
-        }
-        else
-        {
-            Console.WriteLine("It isn't valid");
-            _isSuccess = false;
-        }
-    }
+    // TODO: formulaire weapon dans formulaire Robot pour ajouter de nouvelles armes dynamiquement
 
 }
+

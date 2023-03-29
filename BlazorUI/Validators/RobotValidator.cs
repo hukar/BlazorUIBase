@@ -29,6 +29,7 @@ public class RobotValidator : AbstractValidator<Robot>
         Weapon? weapon, ValidationContext<Robot> context, CancellationToken token)
     {
         var existingWeapons = await _repo.GetAllWeapons();
+        // TODO: API spécifique qui prend la weapon et renvoie un bool _repo.IsWeaponExists(myWeapon)
         
         return existingWeapons.Contains(weapon);
     }
