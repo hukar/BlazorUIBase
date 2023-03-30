@@ -26,6 +26,9 @@
                             <MudSelectItem Value="@(new Weapon() { Id = 99, Name = "TUR-99" })">
                                 <img src="images/weapons/weapon-99.png" height="14" class="mr-1"/> TUR-99
                             </MudSelectItem>
+                            <MudSelectItem Value="@(new Weapon() { Id = 17, Name = "Michel Drucker" })">
+                                <img src="images/weapons/weapon-99.png" height="14" class="mr-1"/> Michel Drucker
+                            </MudSelectItem>
                             @foreach (var weapon in _weapons)
                             {
                                 <MudSelectItem Value="@weapon">

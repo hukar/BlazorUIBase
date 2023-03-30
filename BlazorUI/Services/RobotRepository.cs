@@ -30,4 +30,9 @@ public class RobotRepository : IRobotRepository
     {
         throw new NotImplementedException();
     }
+
+    public async Task<bool> IsWeaponExists(Weapon weapon)
+        => await _httpClient.GetFromJsonAsync<bool>(
+            $"/robots/isweaponexists?id={weapon.Id}&name={weapon.Name}"
+        );
 }

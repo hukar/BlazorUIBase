@@ -27,11 +27,6 @@ public class RobotValidator : AbstractValidator<Robot>
 
     private async Task<bool> IsWeaponExist(Robot robot,
         Weapon? weapon, ValidationContext<Robot> context, CancellationToken token)
-    {
-        var existingWeapons = await _repo.GetAllWeapons();
-        // TODO: API spécifique qui prend la weapon et renvoie un bool _repo.IsWeaponExists(myWeapon)
-        
-        return existingWeapons.Contains(weapon);
-    }
+        => weapon is null ? await Task.FromResult(false) : await _repo.IsWeaponExists(weapon);
 }
 
