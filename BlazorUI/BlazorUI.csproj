@@ -22,5 +22,8 @@
   <ItemGroup>
     <Folder Include="wwwroot\images\robots" />
   </ItemGroup>
+  <PropertyGroup>
+    <NoWarn>8974</NoWarn>
+  </PropertyGroup>
 
 </Project>

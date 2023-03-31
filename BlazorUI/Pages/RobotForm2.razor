@@ -1,6 +1,81 @@
 @page "/robot/add2"
-<h3>RobotForm2</h3>
+
+@using Blazored.FluentValidation
+@using FluentValidation
+
+@using System.ComponentModel.DataAnnotations
+@using System.Text.RegularExpressions
+@using BlazorUI.Validators
+<MudText Typo="Typo.h4" Color="Color.Primary">RobotForm2</MudText>
+
+<MudForm @ref="_form" @bind-IsValid="_success" @bind-Errors="_errors">
+    <MudTextField
+        @bind-Value="_creditCardNr" 
+        Validation="ValidateCreditCard" 
+        Immediate="true" 
+        Label="Credit card nr" />
+</MudForm>
+
+<MudText>credit card number: @_creditCardNr</MudText>
+
+
+<MudPaper Class="pa-4 mt-4">
+    <MudButton
+        Variant="Variant.Filled"
+        Color="Color.Primary"
+        DisableElevation="true"
+        OnClick="@(() => _form!.Validate())">
+        Validate
+    </MudButton>
+    <MudButton
+        Variant="Variant.Filled"
+        Color="Color.Secondary"
+        DisableElevation="true"
+        OnClick="@(() => _form!.Reset())" Class="mx-2">
+        Reset
+    </MudButton>
+    <MudButton
+        Variant="Variant.Filled"
+        DisableElevation="true"
+        OnClick="@(() => _form!.ResetValidation())">
+        Reset Validation
+    </MudButton>
+</MudPaper>
+
+<MudPaper Elevation="2" Class="mt-4 pa-8">
+    <MudText Typo="Typo.body1" Color="@(_success ? Color.Success : Color.Error)">
+        Success: @_success
+    </MudText>
+    @foreach (var error in _errors)
+    {
+        <MudText Typo="Typo.body1" Color="Color.Error">
+            @error
+        </MudText>
+    }
+</MudPaper>
 
 @code {
-    
+
+    bool _success;
+    string[] _errors = {} ;
+    MudForm _form;
+
+
+    // This is a valid Visa test card number
+    private string _creditCardNr = "4012 8888 8888 1881";
+
+    CreditCardValidator ccValidator = new CreditCardValidator();
+
+    public IEnumerable<string> ValidateCreditCard(string creditCard)
+    {
+        var result = ccValidator.Validate(creditCard);
+
+        if (result.IsValid)
+        {
+            return new string[] { };
+        }
+
+        return result.Errors.Select(error => error.ErrorMessage);
+    }
+
 }
