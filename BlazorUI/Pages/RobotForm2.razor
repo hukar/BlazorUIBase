@@ -1,25 +1,23 @@
 @page "/robot/add2"
 
-@using Blazored.FluentValidation
-@using FluentValidation
-
-@using System.ComponentModel.DataAnnotations
-@using System.Text.RegularExpressions
-@using BlazorUI.Validators
 <MudText Typo="Typo.h4" Color="Color.Primary">RobotForm2</MudText>
 
-<MudForm @ref="_form" @bind-IsValid="_success" @bind-Errors="_errors">
+<MudForm Model="_robot2" @ref="_form" Validation="_robot2Validator.ValidateValue" @bind-IsValid="_success" @bind-Errors="_errors">
     <MudTextField
-        @bind-Value="_creditCardNr" 
-        Validation="ValidateCreditCard" 
-        Immediate="true" 
-        Label="Credit card nr" />
+        @bind-Value="_robot2.CodeName"
+        For="@(() => _robot2.CodeName)"
+        Immediate="true"
+        Label="Code Name"/>
+    
+    <MudNumericField
+        @bind-Value="_robot2.Power"
+        For="@(() => _robot2.Power)"
+        Label="Power"
+        Variant="Variant.Text"/>
 </MudForm>
 
-<MudText>credit card number: @_creditCardNr</MudText>
 
-
-<MudPaper Class="pa-4 mt-4">
+<MudPaper Class="d-flex pa-4 mt-4">
     <MudButton
         Variant="Variant.Filled"
         Color="Color.Primary"
@@ -31,14 +29,23 @@
         Variant="Variant.Filled"
         Color="Color.Secondary"
         DisableElevation="true"
-        OnClick="@(() => _form!.Reset())" Class="mx-2">
+        OnClick="@(() => _form!.Reset())" 
+        Class="mx-2">
         Reset
     </MudButton>
+    
     <MudButton
         Variant="Variant.Filled"
         DisableElevation="true"
         OnClick="@(() => _form!.ResetValidation())">
         Reset Validation
+    </MudButton>
+    <MudButton
+        Variant="Variant.Filled"
+        Color="Color.Success"
+        OnClick="@(async () => await SubmitForm())"
+        Class="ml-auto">
+        SubmitForm
     </MudButton>
 </MudPaper>
 
@@ -56,26 +63,25 @@
 
 @code {
 
+    [Inject]
+    ISnackbar? Snackbar { get; set; }
+
+    private Robot2 _robot2 = new();
+    private Robot2Validator _robot2Validator = new();
+
     bool _success;
-    string[] _errors = {} ;
-    MudForm _form;
+    string[] _errors = { };
+    MudForm? _form;
 
-
-    // This is a valid Visa test card number
-    private string _creditCardNr = "4012 8888 8888 1881";
-
-    CreditCardValidator ccValidator = new CreditCardValidator();
-
-    public IEnumerable<string> ValidateCreditCard(string creditCard)
+    private async Task SubmitForm()
     {
-        var result = ccValidator.Validate(creditCard);
+        await _form!.Validate();
 
-        if (result.IsValid)
+        if (_form.IsValid)
         {
-            return new string[] { };
+            Snackbar!.Add("Form Is Submitted!");
         }
-
-        return result.Errors.Select(error => error.ErrorMessage);
     }
+
 
 }

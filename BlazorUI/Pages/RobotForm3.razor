@@ -1,0 +1,112 @@
+@page "/robot/add3"
+<h3>RobotForm3</h3>
+
+<MudForm
+    Model="_robot"
+    @ref="_form"
+    Validation="_robotValidator.ValidateValue"
+    @bind-IsValid="_success"
+    @bind-Errors="_errors">
+    
+    <MudTextField
+        Label="Code Name"
+        @bind-Value="_robot.CodeName"
+        For="() => _robot.CodeName"
+        Immediate="true"/>
+    
+    @if (_weapons is not null)
+    {
+        <MudSelect
+            Label="Weapons"
+            @bind-Value="_robot.FavouriteWeapon"
+            Validation="@(async () => await ValidateWeaponAsync(_robot.FavouriteWeapon))">
+            @*<MudSelectItem Value="@(new Weapon { Id = 99, Name = "Trululu"})"></MudSelectItem>*@
+            @foreach (var weapon in _weapons)
+            {
+                <MudSelectItem Value="@weapon">@weapon.Name</MudSelectItem>
+            }
+        </MudSelect>
+    
+        <MudPaper Elevation="2" Class="mt-2 pa-8">
+            @foreach (var weapon in _robot.Weapons)
+            {
+                <MudText Typo="Typo.body1" Color="Color.Primary">
+                    @weapon.Name
+                </MudText>
+            }
+        </MudPaper>
+    }
+
+
+    <MudPaper Elevation="2" Class="mt-2 pa-8">
+        <MudButton
+            Variant="Variant.Filled"
+            Color="Color.Primary"
+            Disabled="_formBeingProcessed"
+            OnClick="async (MouseEventArgs e) => await SubmitForm(e)">Submit Form</MudButton>
+    </MudPaper>
+</MudForm>
+
+<MudPaper Elevation="2" Class="mt-4 pa-8">
+    <MudText Typo="Typo.body1" Color="@(_success ? Color.Success : Color.Error)">
+        Success: @_success
+    </MudText>
+    
+    @foreach (var error in _errors)
+    {
+        <MudText Typo="Typo.body1" Color="Color.Error">
+            @error
+        </MudText>
+    }
+</MudPaper>
+
+@code {
+    private Robot _robot { get; set;  } = new();
+    private MudForm? _form;
+    private RobotValidator _robotValidator = new();
+    private WeaponValidator _weaponValidator = new();
+    private bool _success = false;
+    private bool _formBeingProcessed;
+    private string[] _errors = { };
+
+    private IEnumerable<Weapon>? _weapons;
+
+    [Inject]
+    ISnackbar? Snackbar { get; set;  }
+
+    [Inject]
+    IRobotRepository? Repo { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _weapons = await Repo!.GetAllWeapons();
+    }
+
+    async Task<IEnumerable<string>> ValidateWeaponAsync(Weapon weaponToValidate)
+    {
+        var result = await _weaponValidator.ValidateAsync(weaponToValidate);
+
+        if (result.IsValid) return new string[0];
+
+        return result.Errors.Select(er => er.ErrorMessage);
+    }
+
+    private async Task SubmitForm(MouseEventArgs e)
+    {
+        // Console.WriteLine($"e.Detail : {e.Detail}");
+        if (e.Detail > 1) return;
+        _formBeingProcessed = true;
+        await _form!.Validate();
+        Console.WriteLine("Form Validate");
+
+        if (_form.IsValid)
+        {
+            Snackbar!.Add("Form Is Submitted!");
+            Console.WriteLine("Form Is Submitted!");
+            await Task.Delay(3000);
+            _form.Reset();
+        }
+
+        _formBeingProcessed = false;
+    }
+}

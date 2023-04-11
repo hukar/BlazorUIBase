@@ -2,12 +2,13 @@ using Blazored.FluentValidation;
 using BlazorUI.Services;
 using Domain;
 using Microsoft.AspNetCore.Components;
+// ReSharper disable ClassNeverInstantiated.Global
 
 namespace BlazorUI.Pages;
 
 public partial class RobotForm
 {
-    [Inject] private IRobotRepository? _repo { get; set;  }
+    [Inject] private IRobotRepository? Repo { get; set;  }
 
     private Robot Robot { get; set; } = new() { CodeName = "Mick-22"};
 
@@ -18,7 +19,7 @@ public partial class RobotForm
 
     protected override async Task OnInitializedAsync()
     {
-        _weapons = await _repo!.GetAllWeapons();
+        _weapons = await Repo!.GetAllWeapons();
     }
 
     private async Task SubmitFormAsync()
