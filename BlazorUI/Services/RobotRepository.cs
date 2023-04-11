@@ -20,7 +20,7 @@ public class RobotRepository : IRobotRepository
     }
 
     public async Task<Robot?> GetRobotWithWeapons(int id)
-        => await _httpClient.GetFromJsonAsync<Robot>($"/robots:{id}/weapons");
+        => await _httpClient.GetFromJsonAsync<Robot>($"/robots/{id}/withweapons");
 
     public async Task<IEnumerable<Weapon>> GetAllWeapons()
         => await _httpClient.GetFromJsonAsync<IEnumerable<Weapon>>("/robots/weaponslist") 

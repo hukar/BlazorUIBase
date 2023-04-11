@@ -2,24 +2,33 @@
 
 <MudText Class="mt-6" Typo="Typo.h3" Color="Color.Secondary">RobotList</MudText>
 
-@if (Robots is not null)
+@foreach (var robot in Robots)
 {
-    @foreach (var robot in Robots)
-    {
-        <RobotListItem Robot="robot" />
-    }
+    <RobotListItem Robot="robot" DisintegrateRobot="DeleteRobot" ModifyRobot="ModifyRobot" />
 }
-
 
 @code {
 
     [Inject]
     public IRobotRepository Repo { get; set; } = default!;
 
-    public IEnumerable<Robot>? Robots { get; set; } = default!;
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = default!;
+
+    public List<Robot>? Robots { get; set; } = new List<Robot>();
 
     protected override async Task OnInitializedAsync()
     {
-        Robots = await Repo.GetAllRobots();
+        Robots = (await Repo.GetAllRobots()).ToList();
+    }
+
+    void DeleteRobot(Robot robot)
+    {
+        Robots.Remove(robot);
+    }
+
+    void ModifyRobot(Robot robot)
+    {
+        NavigationManager.NavigateTo($"/modify/{robot.Id}");
     }
 }

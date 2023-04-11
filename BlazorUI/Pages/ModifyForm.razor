@@ -1,6 +1,9 @@
-@page "/robot/add"
+@page "/modify/{robotid:int}"
+@using System.Text.Json
 
-<MudText Class="my-6" Typo="Typo.h3" Color="Color.Secondary">RobotForm : Create Mode</MudText>
+
+
+<MudText Class="my-6" Typo="Typo.h3" Color="Color.Secondary">RobotForm : Modify Mode</MudText>
 
 <EditForm Model="@_robot" OnSubmit="SubmitFormAsync">
     <FluentValidationValidator @ref="_fluentValidationValidator"/>
@@ -107,4 +110,61 @@
 
     // TODO: formulaire weapon dans formulaire Robot pour ajouter de nouvelles armes dynamiquement
 
+}
+
+@code {
+    [Inject] private IRobotRepository? Repo { get; set;  }
+
+    [Parameter] public int robotid { get; set; }
+
+    private MudSelect<Weapon> _multiSelect;
+
+    private Robot _robot = new();
+    private bool _formBeingProcessed;
+    private bool _formBeingSubmited;
+
+    private IEnumerable<Weapon> _weapons = new List<Weapon>();
+    private FluentValidationValidator? _fluentValidationValidator;
+
+    private bool _isSuccess = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _weapons = await Repo!.GetAllWeapons();
+        _robot = await Repo!.GetRobotWithWeapons(robotid);
+    }
+
+    private async Task SubmitFormAsync()
+    {
+        _formBeingProcessed = true;
+        var isFormValid = await _fluentValidationValidator!.ValidateAsync();
+        
+        if (isFormValid)
+        {
+            Console.WriteLine("It's valid");
+            _isSuccess = true;
+            _formBeingSubmited = true;
+            
+            StateHasChanged();
+
+            var robotStr = JsonSerializer.Serialize(_robot, new JsonSerializerOptions()
+            {
+                WriteIndented = true
+            });
+            Console.WriteLine(robotStr);
+            _robot = new Robot();
+            await Task.Delay(3000);
+            
+            _formBeingProcessed = false; // redirection
+            _formBeingSubmited = false;
+            _isSuccess = false;
+        }
+        else
+        {
+            Console.WriteLine("It isn't valid");
+            _isSuccess = false;
+            await Task.Delay(1000);
+            _formBeingProcessed = false;
+        }
+    }
 }

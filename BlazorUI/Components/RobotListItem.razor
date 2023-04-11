@@ -10,11 +10,13 @@
             Class="ml-auto"
             Variant="Variant.Text" 
             Color="Color.Info"
-            EndIcon="@Icons.Material.Filled.EditNote">Edit</MudButton>
+            EndIcon="@Icons.Material.Filled.EditNote"
+            OnClick="async () => await ModifyRobot.InvokeAsync(Robot)">Edit</MudButton>
         <MudButton 
             Variant="Variant.Text" 
             Color="Color.Error"
-            EndIcon="@Icons.Material.Filled.Blender">Disintegrate</MudButton>
+            EndIcon="@Icons.Material.Filled.Blender"
+            OnClick="async () => await DisintegrateRobot.InvokeAsync(Robot)">Disintegrate</MudButton>
     }
     
 </MudPaper>
@@ -26,6 +28,11 @@
 
     [Parameter]
     public bool ReadOnly { get; set; } = false;
+
+    [Parameter]
+    public EventCallback<Robot> DisintegrateRobot { get; set; }
+    [Parameter]
+    public EventCallback<Robot> ModifyRobot { get; set; }
 
     int GetImageId()
     {
