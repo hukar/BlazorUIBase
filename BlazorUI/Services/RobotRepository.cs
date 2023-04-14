@@ -1,15 +1,19 @@
+using System.Net;
 using System.Net.Http.Json;
 using Domain;
+using Microsoft.AspNetCore.Components;
 
 namespace BlazorUI.Services;
 
 public class RobotRepository : IRobotRepository
 {
     private readonly HttpClient _httpClient;
+    private readonly NavigationManager _navigationManager;
 
-    public RobotRepository(HttpClient httpClient)
+    public RobotRepository(HttpClient httpClient, NavigationManager navigationManager)
     {
         _httpClient = httpClient;
+        _navigationManager = navigationManager;
     }
 
     public async Task<IEnumerable<Robot>> GetAllRobots()
@@ -20,7 +24,31 @@ public class RobotRepository : IRobotRepository
     }
 
     public async Task<Robot?> GetRobotWithWeapons(int id)
-        => await _httpClient.GetFromJsonAsync<Robot>($"/robots/{id}/withweapons");
+    {
+        Robot? robot = null;
+
+        try
+        {
+            robot = await _httpClient.GetFromJsonAsync<Robot>($"/robots/{id}/withweapons");
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine(ex.StatusCode);
+
+            if (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                _navigationManager.NavigateTo("/404", forceLoad: true, replace:true);
+            }
+            else
+            {
+                _navigationManager.NavigateTo("/error");
+            }
+
+        }
+
+        return robot;
+    }
+    
 
     public async Task<IEnumerable<Weapon>> GetAllWeapons()
         => await _httpClient.GetFromJsonAsync<IEnumerable<Weapon>>("/robots/weaponslist") 

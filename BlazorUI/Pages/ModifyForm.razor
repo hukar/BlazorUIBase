@@ -1,170 +1,44 @@
-@page "/modify/{robotid:int}"
+@page "/modify/{RobotId:int}"
 @using System.Text.Json
 
 
 
 <MudText Class="my-6" Typo="Typo.h3" Color="Color.Secondary">RobotForm : Modify Mode</MudText>
 
-<EditForm Model="@_robot" OnSubmit="SubmitFormAsync">
-    <FluentValidationValidator @ref="_fluentValidationValidator"/>
-
-    <MudGrid>
-        <MudItem xs="12" sm="6">
-            <MudCard>
-                <MudCardContent>
-                    <MudTextField
-                        @bind-Value="@_robot.CodeName"
-                        For="() => _robot.CodeName"
-                        Label="CodeName"
-                        Variant="Variant.Text"/>
+<MainForm Robot="_robot" IsValid="ModifyRobot" LabelSubmitButton="Modify Robot" />
 
 
-                    <MudSelect
-                        Label="Favourite Weapons"
-                        @bind-Value="@_robot.FavouriteWeapon"
-                        AnchorOrigin="Origin.BottomCenter"
-                        For="() => _robot.FavouriteWeapon">
-                        <MudSelectItem Value="@(new Weapon() { Id = 99, Name = "TUR-99" })">
-                            <img src="images/weapons/weapon-99.png" height="14" class="mr-1"/> TUR-99
-                        </MudSelectItem>
-                        <MudSelectItem Value="@(new Weapon() { Id = 17, Name = "Michel Drucker" })">
-                            <img src="images/weapons/weapon-99.png" height="14" class="mr-1"/> Michel Drucker
-                        </MudSelectItem>
-                        @foreach (var weapon in _weapons)
-                        {
-                            <MudSelectItem Value="@weapon">
-                                <img src="@($"images/weapons/weapon-{weapon.Id}.png")" height="14" class="mr-1"/> @weapon.Name
-                            </MudSelectItem>
-                        }
-                    </MudSelect>
-                    
-                    <MudSelect
-                        @ref="_multiSelect"
-                        Class="mud-input-error"
-                        Label="List Secondary Weapons"
-                        MultiSelection="true"
-                        @bind-SelectedValues="@_robot.Weapons">
-                        <MudSelectItem Value="@(new Weapon() { Id = 98, Name = "TUR-98" })">
-                            <img src="images/weapons/weapon-99.png" height="14" class="mr-1"/> TUR-98
-                        </MudSelectItem>
-                        <MudSelectItem Value="@(new Weapon() { Id = 99, Name = "TUR-99" })">
-                            <img src="images/weapons/weapon-99.png" height="14" class="mr-1"/> TUR-99
-                        </MudSelectItem>
-                        @foreach (var weapon in _weapons)
-                        {
-                            <MudSelectItem Value="@weapon">
-                                <img src="@($"images/weapons/weapon-{weapon.Id}.png")" height="14" class="mr-1"/> @weapon.Name
-                            </MudSelectItem>
-                        }
-                    </MudSelect>
-                </MudCardContent>
-                <MudCardActions>
-                    <MudButton
-                        Variant="Variant.Filled"
-                        ButtonType="ButtonType.Submit"
-                        Color="Color.Secondary"
-                        Disabled="_formBeingProcessed">
-                        Add Robot
-                    </MudButton>
-                    @if (_formBeingSubmited)
-                    {
-                        <MudProgressCircular
-                            Class="ml-4"
-                            Color="Color.Secondary" 
-                            Size="Size.Small" 
-                            Indeterminate="true"/>
-                    }
-                </MudCardActions>
-            </MudCard>
-        </MudItem>
-        <MudItem xs="12" sm="6">
-            <MudPaper Elevation="2" Class="mud-height-full pa-4">
-                <MudText Typo="Typo.h6">Validation Summary</MudText>
-                @if (_isSuccess)
-                {
-                    <MudText Typo="Typo.body1" Color="Color.Success">Validation is successfull</MudText>
-                }
-                else
-                {
-                    <MudText Color="Color.Error">
-                        <ValidationSummary/>
-                    </MudText>
-                }
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12">
-            <MudPaper Elevation="2" Class="pa-8 mt-4">
-                @if (_robot.Weapons is not null)
-                {
-                    @foreach (var weapon in _robot.Weapons)
-                    {
-                        <MudText Typo="Typo.body1">@weapon.Name</MudText>
-                    }
-                }
-            </MudPaper>
-        </MudItem>
-    </MudGrid>
-</EditForm>
-
-@code {
-
-    // TODO: formulaire weapon dans formulaire Robot pour ajouter de nouvelles armes dynamiquement
-
-}
 
 @code {
     [Inject] private IRobotRepository? Repo { get; set;  }
 
-    [Parameter] public int robotid { get; set; }
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = default!;
 
-    private MudSelect<Weapon> _multiSelect;
+    [Parameter] public int RobotId { get; set; }
 
-    private Robot _robot = new();
-    private bool _formBeingProcessed;
-    private bool _formBeingSubmited;
-
-    private IEnumerable<Weapon> _weapons = new List<Weapon>();
-    private FluentValidationValidator? _fluentValidationValidator;
-
-    private bool _isSuccess = false;
+    private Robot? _robot = new();
 
     protected override async Task OnInitializedAsync()
     {
-        _weapons = await Repo!.GetAllWeapons();
-        _robot = await Repo!.GetRobotWithWeapons(robotid);
+        _robot = await Repo!.GetRobotWithWeapons(RobotId);
+
+        
+        if (_robot is null)
+        {
+            Console.WriteLine("Robot doesn't exist, go to create it");
+            NavigationManager.NavigateTo("/robot/add");
+        }
     }
 
-    private async Task SubmitFormAsync()
+    private void ModifyRobot()
     {
-        _formBeingProcessed = true;
-        var isFormValid = await _fluentValidationValidator!.ValidateAsync();
-        
-        if (isFormValid)
+        var robotStr = JsonSerializer.Serialize(_robot, new JsonSerializerOptions()
         {
-            Console.WriteLine("It's valid");
-            _isSuccess = true;
-            _formBeingSubmited = true;
-            
-            StateHasChanged();
-
-            var robotStr = JsonSerializer.Serialize(_robot, new JsonSerializerOptions()
-            {
-                WriteIndented = true
-            });
-            Console.WriteLine(robotStr);
-            _robot = new Robot();
-            await Task.Delay(3000);
-            
-            _formBeingProcessed = false; // redirection
-            _formBeingSubmited = false;
-            _isSuccess = false;
-        }
-        else
-        {
-            Console.WriteLine("It isn't valid");
-            _isSuccess = false;
-            await Task.Delay(1000);
-            _formBeingProcessed = false;
-        }
+            WriteIndented = true
+        });
+        Console.WriteLine("Robot is Modified");
+        Console.WriteLine(robotStr);
+        NavigationManager.NavigateTo("/robot/list");
     }
 }

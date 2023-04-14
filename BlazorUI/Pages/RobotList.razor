@@ -15,11 +15,12 @@
     [Inject]
     public NavigationManager NavigationManager { get; set; } = default!;
 
-    public List<Robot>? Robots { get; set; } = new List<Robot>();
+    public List<Robot> Robots { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
         Robots = (await Repo.GetAllRobots()).ToList();
+        Robots.Add(new Robot() { Id = 99, CodeName = "I'am not exists" });
     }
 
     void DeleteRobot(Robot robot)
