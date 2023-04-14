@@ -1,12 +1,22 @@
 @page "/robot/add"
 @using System.Text.Json
+@using System.Data
 
 <MudText Class="my-6" Typo="Typo.h3" Color="Color.Secondary">RobotForm : Create Mode</MudText>
 
 <MainForm Robot="_robot" IsValid="SaveRobot" LabelSubmitButton="Add Robot"/>
 
 @code {
-    private Robot _robot = new();
+
+    [CascadingParameter(Name = "AppState")]
+    public AppState State { get; set; } = default!;
+
+    private Robot? _robot; // = new();
+
+    protected override void OnInitialized()
+    {
+        _robot = State.Robot;
+    }
 
     private void SaveRobot()
     {

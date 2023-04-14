@@ -1,0 +1,12 @@
+
+<CascadingValue Name="AppState" Value="this">
+    @ChildContent
+</CascadingValue>
+
+@code {
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    public Robot Robot { get; set; } = new();
+}

@@ -1,4 +1,5 @@
-﻿@inherits LayoutComponentBase
+﻿@using Severity = MudBlazor.Severity
+@inherits LayoutComponentBase
 
 <MudThemeProvider/>
 <MudDialogProvider/>
@@ -19,7 +20,19 @@
     </MudDrawer>
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.Medium">
-            @Body
+            <ErrorBoundary>
+                <ChildContent>
+                    @Body
+                </ChildContent>
+                <ErrorContent>
+                    <MudAlert
+                        Class="mt-12"
+                        Variant="Variant.Text"
+                        Severity="Severity.Error">
+                        Une erreur c'est produite 👻
+                    </MudAlert>
+                </ErrorContent>
+            </ErrorBoundary>
         </MudContainer>
     </MudMainContent>
 </MudLayout>

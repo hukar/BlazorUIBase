@@ -1,0 +1,23 @@
+@page "/error-handling"
+
+
+<MudText Typo="Typo.h3" Color="Color.Secondary">ErrorHandling</MudText>
+
+<MudPaper Elevation="2" Class="ma-4 py-8 d-flex">
+    <MudButton 
+        Class="mx-auto"
+        Variant="Variant.Filled" 
+        Color="Color.Error" 
+        StartIcon="@Icons.Material.Filled.CatchingPokemon"
+        OnClick="ThrowException">
+        BOUM !!!
+    </MudButton>
+</MudPaper>
+
+@code {
+
+    private void ThrowException()
+    {
+        throw new Exception("Boum Bada Boum !!!");
+    }
+}
