@@ -20,7 +20,7 @@
     </MudDrawer>
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.Medium">
-            <ErrorBoundary>
+            <ErrorBoundary @ref="_errorBoundary" Context="Exception">
                 <ChildContent>
                     @Body
                 </ChildContent>
@@ -28,8 +28,12 @@
                     <MudAlert
                         Class="mt-12"
                         Variant="Variant.Text"
-                        Severity="Severity.Error">
-                        Une erreur c'est produite 👻
+                        Severity="Severity.Error" 
+                        ShowCloseIcon="true" 
+                        CloseIconClicked="ErrorRecovering">
+                        Une erreur c'est produite 👻, 
+                        Type: @Exception.GetType(),
+                        Message: @Exception.Message
                     </MudAlert>
                 </ErrorContent>
             </ErrorBoundary>
@@ -39,8 +43,12 @@
 @code {
     bool _drawerOpen = true;
 
+    ErrorBoundary _errorBoundary = default!;
+
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
     }
+
+    void ErrorRecovering() => _errorBoundary.Recover();
 }
