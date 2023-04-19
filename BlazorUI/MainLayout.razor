@@ -12,15 +12,15 @@
     </MudAppBar>
     <MudDrawer @bind-Open="@_drawerOpen">
         <MudPaper Class="ma-4 py-12 d-flex justify-center" Elevation="3">
-        <MudAvatar Style="height:70px; width:70px;" Color="Color.Primary">
-            <MudIcon Style="font-size: 3rem;transform: rotate(180deg)" Icon="@Icons.Material.TwoTone.Propane"/>
-        </MudAvatar>
+            <MudAvatar Style="height:70px; width:70px;" Color="Color.Primary">
+                <MudIcon Style="font-size: 3rem;transform: rotate(180deg)" Icon="@Icons.Material.TwoTone.Propane"/>
+            </MudAvatar>
         </MudPaper>
         <AppNav></AppNav>
     </MudDrawer>
     <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.Medium">
-            <ErrorBoundary @ref="_errorBoundary" Context="Exception">
+            <CustomErrorBoundary @ref="_errorBoundary" Context="Exception">
                 <ChildContent>
                     @Body
                 </ChildContent>
@@ -36,14 +36,15 @@
                         Message: @Exception.Message
                     </MudAlert>
                 </ErrorContent>
-            </ErrorBoundary>
+            </CustomErrorBoundary>
         </MudContainer>
     </MudMainContent>
 </MudLayout>
+
 @code {
     bool _drawerOpen = true;
 
-    ErrorBoundary _errorBoundary = default!;
+    CustomErrorBoundary _errorBoundary = default!;
 
     void DrawerToggle()
     {

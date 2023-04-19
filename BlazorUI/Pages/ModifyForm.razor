@@ -1,33 +1,43 @@
 @page "/modify/{RobotId:int}"
 @using System.Text.Json
-
+@using System.Net
 
 
 <MudText Class="my-6" Typo="Typo.h3" Color="Color.Secondary">RobotForm : Modify Mode</MudText>
 
-<MainForm Robot="_robot" IsValid="ModifyRobot" LabelSubmitButton="Modify Robot" />
-
+<MainForm Robot="_robot" IsValid="ModifyRobot" LabelSubmitButton="Modify Robot"/>
 
 
 @code {
-    [Inject] private IRobotRepository? Repo { get; set;  }
+    [Inject]
+    private IRobotRepository? Repo { get; set; }
 
     [Inject]
     private NavigationManager NavigationManager { get; set; } = default!;
 
-    [Parameter] public int RobotId { get; set; }
+    [Parameter]
+    public int RobotId { get; set; }
 
     private Robot? _robot = new();
 
     protected override async Task OnInitializedAsync()
     {
-        _robot = await Repo!.GetRobotWithWeapons(RobotId);
-
-        
-        if (_robot is null)
+        try
         {
-            Console.WriteLine("Robot doesn't exist, go to create it");
-            NavigationManager.NavigateTo("/robot/add");
+            _robot = await Repo!.GetRobotWithWeapons(RobotId);
+        }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine(ex.StatusCode);
+
+            if (ex.StatusCode == HttpStatusCode.NotFound)
+            {
+                NavigationManager.NavigateTo("/404", forceLoad: true, replace: true);
+            }
+            else
+            {
+                NavigationManager.NavigateTo("/error");
+            }
         }
     }
 
@@ -41,4 +51,5 @@
         Console.WriteLine(robotStr);
         NavigationManager.NavigateTo("/robot/list");
     }
+
 }

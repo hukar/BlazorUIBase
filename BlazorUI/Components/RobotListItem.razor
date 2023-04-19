@@ -1,9 +1,10 @@
 @using Domain
+
 <MudPaper Class="d-flex gap-4 pa-2 my-4 align-center grey lighten-5" Elevation="2">
     <MudAvatar Rounded="true" Style="height: 50px; width:  50px;">
         <MudImage Src="@($"images/robots/robot-{GetImageId()}.png")" ></MudImage>
     </MudAvatar>
-    <MudText Typo="Typo.h6" Class="grey-text text-darken-1">@Robot!.CodeName</MudText>
+    <MudText Typo="Typo.h6" Class="grey-text text-darken-1">@Robot!.CodeName [ID:@Robot.Id]</MudText>
     @if (!ReadOnly)
     {
         <MudButton
